@@ -1,0 +1,8 @@
+*.pth
+*.pt
+cifar10_data/
+mnist_data/
+models/
+*.tar.gz
+__pycache__/
+.ipynb_checkpoints/
