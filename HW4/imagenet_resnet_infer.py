@@ -43,6 +43,9 @@ def lime_explanation(image_path, predicted_class, num_samples=1000, num_features
     segments = slic(input_array, n_segments=num_features, compactness=10, sigma=1, start_label=0)
     num_superpixels = len(np.unique(segments))
 
+    # Get device of model
+    device = next(model.parameters()).device
+
     perturbations = []
     predictions = []
 
@@ -57,7 +60,7 @@ def lime_explanation(image_path, predicted_class, num_samples=1000, num_features
                 perturbed_image[segments == i] = 0.5
 
         perturbed_pil = Image.fromarray((perturbed_image * 255).astype(np.uint8))
-        perturbed_tensor = preprocess(perturbed_pil)
+        perturbed_tensor = preprocess(perturbed_pil).to(device)
         with torch.no_grad():
             perturbed_output = model(perturbed_tensor.unsqueeze(0))
             perturbed_probs = F.softmax(perturbed_output, dim=1)[0]
@@ -80,6 +83,9 @@ def lime_explanation(image_path, predicted_class, num_samples=1000, num_features
 
 #smoothgrad
 def smoothgrad_explanation(input_tensor, predicted_class, num_samples=50, noise_level=0.15):
+    # Get device of model
+    device = next(model.parameters()).device
+    input_tensor = input_tensor.to(device)
 
     total_gradients = torch.zeros_like(input_tensor)
 
