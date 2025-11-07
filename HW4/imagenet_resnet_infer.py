@@ -104,7 +104,7 @@ def smoothgrad_explanation(input_tensor, predicted_class, num_samples=50, noise_
 
 
     smooth_grad = total_gradients / num_samples
-    smooth_grad_map = torch.abs(smooth_grad).sum(dim=0).numpy()
+    smooth_grad_map = torch.abs(smooth_grad).sum(dim=0).cpu().numpy()
 
     return smooth_grad_map
 
